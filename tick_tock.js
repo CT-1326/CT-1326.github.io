@@ -1,6 +1,6 @@
 // Set the date we're counting down to
-var First = new Date("Aug 29, 2019 09:00:00").getTime();
-var Second = new Date("Oct 28, 2019 09:00:00").getTime();
+var First = new Date("Aug 29, 2019 00:00:00").getTime();
+var Second = new Date("Oct 28, 2019 00:00:00").getTime();
 var Check = 0
 var word = ['개강', '특별한 날']
 
