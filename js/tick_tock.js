@@ -1,8 +1,8 @@
 // Set the date we're counting down to
 var Check = 0
-var Word = ['개강', '변경','특별한 날']
+var Word = ['개강', '변경', '특별한 날']
 var Dt = {
-  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Sep 4, 2019 23:59:59").getTime(),new Date("Oct 29, 2019 00:00:00").getTime()]
+  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Sep 4, 2019 23:59:59").getTime(), new Date("Oct 29, 2019 00:00:00").getTime()]
 };
 
 // Update the count down every 1 second
