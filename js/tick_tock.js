@@ -2,7 +2,7 @@
 var Check = 0
 var Word = ['개강', '특별한 날']
 var Dt = {
-  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Oct 29, 2019 00:00:00").getTime()]
+  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Sep 4, 2019 23:59:59").getTime(),new Date("Oct 29, 2019 00:00:00").getTime()]
 };
 
 // Update the count down every 1 second
@@ -10,7 +10,7 @@ var x = setInterval(function() {
 
   // Get today's date and time
   var now = new Date().getTime();
-  
+
   var distance = Dt.id[Check] - now;
 
   // Time calculations for days, hours, minutes and seconds
