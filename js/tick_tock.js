@@ -2,7 +2,7 @@
 var Check = 0
 var Word = ['개강', '변경', '특별한 날']
 var Dt = {
-  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Sep 4, 2019 23:59:59").getTime(), new Date("Oct 29, 2019 00:00:00").getTime()]
+  id: [new Date("Aug 29, 2019 00:00:00").getTime(), new Date("Sep 04, 2019 23:59:59").getTime(), new Date("Oct 29, 2019 00:00:00").getTime()]
 };
 
 // Update the count down every 1 second
@@ -20,7 +20,7 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   // Display the result in the element with id="demo"
-  document.getElementById("jj").innerHTML = Word[Check] + " 까지 " + days + "일 " + hours + "시 " +
+  document.getElementById("jsp").innerHTML = Word[Check] + " 까지 " + days + "일 " + hours + "시 " +
     minutes + "분 " + seconds + "초 남았습니다 "
 
   // If the count down is finished, write some text
