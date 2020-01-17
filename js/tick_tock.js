@@ -1,6 +1,6 @@
 // Set the date we're counting down to
 var Check = 0
-var Word = '데드라인'
+var Word = "데드라인"
 var Dt = {
   id: new Date("Jun 01, 2020 00:00:00").getTime()
 };
@@ -11,7 +11,7 @@ var x = setInterval(function () {
   // Get today's date and time
   var now = new Date().getTime();
 
-  var distance = Dt.id[Check] - now;
+  var distance = Dt.id - now;
 
   // Time calculations for days, hours, minutes and seconds
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -20,7 +20,7 @@ var x = setInterval(function () {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   // Display the result in the element with id="demo"
-  document.getElementById("jsp").innerHTML = Word[Check] + " 까지 " + days + "일 " + hours + "시 " +
+  document.getElementById("jsp").innerHTML = Word + " 까지 " + days + "일 " + hours + "시 " +
     minutes + "분 " + seconds + "초 남았습니다 "
 
   // If the count down is finished, write some text
