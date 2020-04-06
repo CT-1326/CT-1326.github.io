@@ -2,7 +2,7 @@
 var Check = 0
 var Word = "데드라인"
 var Dt = {
-    id: new Date("Jun 01, 2020 00:00:00").getTime()
+    id: new Date("Jul 03, 2020 00:00:00").getTime()
 };
 
 // Update the count down every 1 second
