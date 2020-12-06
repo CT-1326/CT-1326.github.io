@@ -1,30 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko">
-
+<html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width" initial-scale="1">
-        <script src="https://bsaa7567.github.io/js/tick_tock.js"></script>
-        <style>
-            p {
-                font-size: 60px;
-                color: white;
-                text-align: center;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%,-50%);
-            }
-
-            body {
-                background-image: url("https://media2.giphy.com/media/141pvY0vZOMfJu/source.gif");
-            }
-        </style>
-        <title>Time to Check</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
     </head>
-
     <body>
-        <p id="jsp"></p>
-    </body>
+        <div id="map" style="width:500px;height:400px;"></div>
+        <script
+            type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은 APP KEY를 넣으시면 됩니다."></script>
+        <script>
+            var container = document.getElementById('map');
+            var options = {
+                center: new kakao
+                    .maps
+                    .LatLng(33.450701, 126.570667),
+                level: 3
+            };
 
+            var map = new kakao
+                .maps
+                .Map(container, options);
+        </script>
+    </body>
 </html>
