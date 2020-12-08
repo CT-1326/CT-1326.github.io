@@ -77,7 +77,7 @@
 
             function display(coordinates, name) {
                 let path = []
-                let = points = []
+                let points = []
                 $.each(coordinates[0], function (index, coordinate) {
                     for (let index = 0; index < coordinate.length; index++) {
                         let point = new Object();
@@ -87,7 +87,7 @@
                         path.push(new kakao.maps.LatLng(coordinate[index][1], coordinate[index][0]))
                     }
                 });
-                console.log(path);
+                // console.log(path);
 
                 let polygon = new kakao
                     .maps
