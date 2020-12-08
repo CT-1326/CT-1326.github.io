@@ -3,20 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!--jQuery 로드-->
-        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-        <!--KAKAO-MAP clusterer 라이브러리 로드-->
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> <!--jQuery 로드-->
         <script
             type="text/javascript"
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2befa4c2ccbf24ac6c3bec24f23abb28&libraries=clusterer"></script>
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2befa4c2ccbf24ac6c3bec24f23abb28&libraries=clusterer"></script> <!--KAKAO-MAP clusterer 라이브러리 로드-->
         <title>Sample-KAKAO_Map</title>
     </head>
     <body>
         <div id="map" style="width:100%;height:900px;"></div>
-        <!--KAKAO-MAP 로드-->
         <script
             type="text/javascript"
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2befa4c2ccbf24ac6c3bec24f23abb28"></script>
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2befa4c2ccbf24ac6c3bec24f23abb28"></script> <!--KAKAO-MAP 로드-->
         <script>
             let map = new kakao
                 .maps
@@ -36,7 +33,7 @@
             // 지도에 컨트롤을 추가해야 지도위에 표시됩니다 kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데
             // TOPRIGHT는 오른쪽 위를 의미합니다
             map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-
+            
             // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
             var zoomControl = new kakao
                 .maps
@@ -69,7 +66,6 @@
                             clickable: true
                         });
                 });
-                // 각 마커마다의 텍스트 인포윈도우 출력
                 for (let index = 0; index < markers.length; index++) {
                     //마커에 표시할 인포윈도우를 생성합니다
                     var infowindow = new kakao
