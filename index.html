@@ -75,6 +75,7 @@
             });
 
             let polygons = []; // 확대 시 폴리곤 제거를 위한 배열
+            let polygons_clone = []
 
             function display(coordinates, name) {
                 let path = [];
@@ -89,7 +90,7 @@
                         path.push(new kakao.maps.LatLng(coordinate[index][1], coordinate[index][0]))
                     }
                 });
-                // console.log(path); 읍면동 하나 당 폴리곤 생성
+                // 읍면동 하나 당 폴리곤 생성
                 let polygon = new kakao
                     .maps
                     .Polygon({
@@ -141,9 +142,7 @@
                     .maps
                     .event
                     .addListener(polygon, 'click', function () {
-                        // console.log(points);
-                        let level = map.getLevel() - 4;
-                        map.setLevel(level, {
+                        map.setLevel(3, {
                             anchor: centroid(points),
                             animate: {
                                 duration: 350
@@ -183,12 +182,30 @@
 
                 // 클릭 이벤트로 지도 확대 시 전체 폴리곤 제거
                 function deletePolygon(polygons) {
+                    polygons_clone = polygons;
                     for (let index = 0; index < polygons.length; index++) {
                         polygons[index].setMap(null);
                     }
                     polygons = [];
                 }
             };
+            kakao
+                .maps
+                .event
+                .addListener(map, 'zoom_changed', function () {
+                    // 지도의 현재 레벨을 얻어옵니다
+                    var level = map.getLevel();
+                    // console.log(level);
+                    if (level >= 5) {
+                        for (let index = 0; index < polygons_clone.length; index++) {
+                            polygons_clone[index].setMap(map);
+                        }
+                    }
+
+                    if (level <= 3) {
+                        console.log('마커 이벤트');
+                    }
+                });
         </script>
     </body>
 </html>
