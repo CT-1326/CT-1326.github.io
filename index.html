@@ -40,8 +40,8 @@
                     // 지도를 표시할 div
                     center: new kakao
                         .maps
-                        .LatLng(36.2683, 127.6358), // 초기 지도의 중심좌표
-                    level: 13 // 초기 지도의 확대 레벨
+                        .LatLng(37.5642135, 127.0016985), // 초기 지도의 중심좌표
+                    level: 8 // 초기 지도의 확대 레벨
                 });
             let customOverlay = new kakao
                 .maps
@@ -62,13 +62,13 @@
                 .ZoomControl();
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-            $.getJSON("json/korea.geojson", function (params) {
+            $.getJSON("json/seoul.geojson", function (params) {
                 let data = params.features;
                 let coordinates = [];
                 let name = '';
                 $.each(data, function (index, val) {
                     coordinates = val.geometry.coordinates;
-                    name = val.properties.adm_nm;
+                    name = val.properties.emd_kor_nm;
 
                     // console.log(coordinates, name);
                     display(coordinates, name);
@@ -76,8 +76,9 @@
             });
 
             function display(coordinates, name) {
-                let path = []
-                let points = []
+                let path = [];
+                let points = [];
+
                 $.each(coordinates[0], function (index, coordinate) {
                     for (let index = 0; index < coordinate.length; index++) {
                         let point = new Object();
@@ -133,6 +134,48 @@
                         polygon.setOptions({fillColor: '#fff'});
                         customOverlay.setMap(null);
                     });
+
+                kakao
+                    .maps
+                    .event
+                    .addListener(polygon, 'click', function () {
+                        console.log(name);
+                        // console.log(points);
+                        // let level = map.getLevel() - 2;
+                        // map.setLevel(level, {
+                        //     anchor: centroid(points),
+                        //     animate: {
+                        //         duration: 350
+                        //     }
+                        // });
+                    });
+
+                // function centroid(points) {
+                //     let i,
+                //         j,
+                //         len,
+                //         p1,
+                //         p2,
+                //         f,
+                //         area,
+                //         x,
+                //         y;
+
+                //     area = x = y = 0;
+
+                //     for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+                //         p1 = points[i];
+                //         p2 = points[j];
+
+                //         f = p1.y * p2.x - p2.y * p1.x;
+                //         x += (p1.x + p2.x) * f;
+                //         y += (p1.y + p2.y) * f;
+                //         area += f * 3;
+                //     }
+                //     retrun new kakao
+                //         .maps
+                //         .LatLng(x / area, y / area);
+                // }
             };
         </script>
     </body>
