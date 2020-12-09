@@ -16,7 +16,6 @@
                 left: 15px;
                 padding: 2px;
             }
-
             .info {
                 font-size: 12px;
                 padding: 5px;
@@ -45,7 +44,7 @@
                 });
             let customOverlay = new kakao
                 .maps
-                .CustomOverlay({});
+                .CustomOverlay({}); // 읍면동 이름을 표시할 오버레이
 
             // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
             var mapTypeControl = new kakao
@@ -62,6 +61,7 @@
                 .ZoomControl();
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
+            // 서울 읍면동 데이터 파일을 입력 받아 폴리곤 렌더링
             $.getJSON("json/seoul.geojson", function (params) {
                 let data = params.features;
                 let coordinates = [];
@@ -69,11 +69,12 @@
                 $.each(data, function (index, val) {
                     coordinates = val.geometry.coordinates;
                     name = val.properties.emd_kor_nm;
-
                     // console.log(coordinates, name);
                     display(coordinates, name);
                 });
             });
+
+            let polygons = []; // 확대 시 폴리곤 제거를 위한 배열
 
             function display(coordinates, name) {
                 let path = [];
@@ -88,8 +89,7 @@
                         path.push(new kakao.maps.LatLng(coordinate[index][1], coordinate[index][0]))
                     }
                 });
-                // console.log(path);
-
+                // console.log(path); 읍면동 하나 당 폴리곤 생성
                 let polygon = new kakao
                     .maps
                     .Polygon({
@@ -102,6 +102,7 @@
                         fillColor: '#fff',
                         fillOpacity: 0.7
                     });
+                polygons.push(polygon);
 
                 // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다 지역명을 표시하는 커스텀오버레이를 지도위에
                 // 표시합니다
@@ -135,47 +136,58 @@
                         customOverlay.setMap(null);
                     });
 
+                // 폴리곤 클릭 시 해당 읍면동으로 확대 줌
                 kakao
                     .maps
                     .event
                     .addListener(polygon, 'click', function () {
-                        console.log(name);
                         // console.log(points);
-                        // let level = map.getLevel() - 2;
-                        // map.setLevel(level, {
-                        //     anchor: centroid(points),
-                        //     animate: {
-                        //         duration: 350
-                        //     }
-                        // });
+                        let level = map.getLevel() - 4;
+                        map.setLevel(level, {
+                            anchor: centroid(points),
+                            animate: {
+                                duration: 350
+                            }
+                        });
+                        deletePolygon(polygons);
                     });
 
-                // function centroid(points) {
-                //     let i,
-                //         j,
-                //         len,
-                //         p1,
-                //         p2,
-                //         f,
-                //         area,
-                //         x,
-                //         y;
+                // 폴리곤 중심좌표를 구하는 centroid 알고리즘 함수
+                function centroid(points) {
+                    let i,
+                        j,
+                        len,
+                        p1,
+                        p2,
+                        f,
+                        area,
+                        x,
+                        y;
 
-                //     area = x = y = 0;
+                    area = x = y = 0;
 
-                //     for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
-                //         p1 = points[i];
-                //         p2 = points[j];
+                    for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+                        p1 = points[i];
+                        p2 = points[j];
 
-                //         f = p1.y * p2.x - p2.y * p1.x;
-                //         x += (p1.x + p2.x) * f;
-                //         y += (p1.y + p2.y) * f;
-                //         area += f * 3;
-                //     }
-                //     retrun new kakao
-                //         .maps
-                //         .LatLng(x / area, y / area);
-                // }
+                        f = p1.y * p2.x - p2.y * p1.x;
+                        x += (p1.x + p2.x) * f;
+                        y += (p1.y + p2.y) * f;
+                        area += f * 3;
+                    }
+
+                    return new kakao
+                        .maps
+                        .LatLng(x / area, y / area);
+                }
+
+                // 클릭 이벤트로 지도 확대 시 전체 폴리곤 제거
+                function deletePolygon(polygons) {
+                    for (let index = 0; index < polygons.length; index++) {
+                        polygons[index].setMap(null);
+                    }
+                    polygons = [];
+                }
             };
         </script>
     </body>
