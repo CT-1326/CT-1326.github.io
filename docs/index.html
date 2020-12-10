@@ -42,6 +42,7 @@
                         .LatLng(37.5642135, 127.0016985), // 초기 지도의 중심좌표
                     level: 8 // 초기 지도의 확대 레벨
                 });
+            console.log("초기 확대 레벨 값은 :", map.getLevel());
             let customOverlay = new kakao
                 .maps
                 .CustomOverlay({}); // 읍면동 이름을 표시할 오버레이
@@ -197,18 +198,39 @@
                 .addListener(map, 'zoom_changed', function () {
                     // 지도의 현재 레벨을 얻어옵니다
                     var level = map.getLevel();
-                    console.log(level);
+                    console.log("현재 확대 레벨 값은 :", level);
 
                     if (level >= 5) {
                         for (let index = 0; index < polygons.length; index++) {
                             polygons[index].setMap(map);
                         }
+                        // if (markers) {     for (var i = 0; i < markers.length; i++) {
+                        // markers[i].setMap(null);     } }
                     }
 
                     if (level <= 3) {
                         for (let index = 0; index < polygons.length; index++) {
                             polygons[index].setMap(null);
                         }
+                        $.getJSON(
+                            "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/chic" +
+                                    "ken.json",
+                            function (data) {
+                                let markers = $(data.positions).map(function (i, position) {
+                                    return new kakao
+                                        .maps
+                                        .Marker({
+                                            position: new kakao
+                                                .maps
+                                                .LatLng(position.lat, position.lng),
+                                            clickable: true
+                                        });
+                                });
+                                for (var i = 0; i < markers.length; i++) {
+                                    markers[i].setMap(map);
+                                }
+                            }
+                        );
                     }
                 });
         </script>
