@@ -62,7 +62,7 @@
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
             // 서울 읍면동 데이터 파일을 입력 받아 폴리곤 렌더링
-            $.getJSON("json/seoul.geojson", function (params) {
+            $.getJSON("../json/seoul.geojson", function (params) {
                 let data = params.features;
                 let coordinates = [];
                 let name = '';
