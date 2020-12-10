@@ -62,20 +62,23 @@
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
             // 서울 읍면동 데이터 파일을 입력 받아 폴리곤 렌더링
-            $.getJSON("https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/seoul.geojson", function (params) {
-                let data = params.features;
-                let coordinates = [];
-                let name = '';
-                $.each(data, function (index, val) {
-                    coordinates = val.geometry.coordinates;
-                    name = val.properties.emd_kor_nm;
-                    // console.log(coordinates, name);
-                    display(coordinates, name);
-                });
-            });
+            $.getJSON(
+                "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/seou" +
+                        "l.geojson",
+                function (params) {
+                    let data = params.features;
+                    let coordinates = [];
+                    let name = '';
+                    $.each(data, function (index, val) {
+                        coordinates = val.geometry.coordinates;
+                        name = val.properties.emd_kor_nm;
+                        // console.log(coordinates, name);
+                        display(coordinates, name);
+                    });
+                }
+            );
 
             let polygons = []; // 확대 시 폴리곤 제거를 위한 배열
-            let polygons_clone = []
 
             function display(coordinates, name) {
                 let path = [];
@@ -182,11 +185,10 @@
 
                 // 클릭 이벤트로 지도 확대 시 전체 폴리곤 제거
                 function deletePolygon(polygons) {
-                    polygons_clone = polygons;
                     for (let index = 0; index < polygons.length; index++) {
                         polygons[index].setMap(null);
                     }
-                    polygons = [];
+                    // polygons = [];
                 }
             };
             kakao
@@ -195,15 +197,18 @@
                 .addListener(map, 'zoom_changed', function () {
                     // 지도의 현재 레벨을 얻어옵니다
                     var level = map.getLevel();
-                    // console.log(level);
+                    console.log(level);
+
                     if (level >= 5) {
-                        for (let index = 0; index < polygons_clone.length; index++) {
-                            polygons_clone[index].setMap(map);
+                        for (let index = 0; index < polygons.length; index++) {
+                            polygons[index].setMap(map);
                         }
                     }
 
                     if (level <= 3) {
-                        console.log('마커 이벤트');
+                        for (let index = 0; index < polygons.length; index++) {
+                            polygons[index].setMap(null);
+                        }
                     }
                 });
         </script>
