@@ -80,6 +80,8 @@
             );
 
             let polygons = []; // 확대 시 폴리곤 제거를 위한 배열
+            let check_polygons = true;
+            let check_markers = false;
 
             function display(coordinates, name) {
                 let path = [];
@@ -105,7 +107,7 @@
                         strokeOpacity: 0.8,
                         // strokeStyle: 'dashed',
                         fillColor: '#fff',
-                        fillOpacity: 0.7
+                        fillOpacity: 0.3
                     });
                 polygons.push(polygon);
 
@@ -146,7 +148,7 @@
                     .maps
                     .event
                     .addListener(polygon, 'click', function () {
-                        map.setLevel(3, {
+                        map.setLevel(4, {
                             anchor: centroid(points),
                             animate: {
                                 duration: 350
@@ -189,9 +191,12 @@
                     for (let index = 0; index < polygons.length; index++) {
                         polygons[index].setMap(null);
                     }
+                    check_polygons = false;
                     // polygons = [];
                 }
             };
+
+            let markers = [];
             kakao
                 .maps
                 .event
@@ -200,39 +205,90 @@
                     var level = map.getLevel();
                     console.log("현재 확대 레벨 값은 :", level);
 
+                    // 확대 레벨 값이 5 이상인 경우 폴리곤 재생성
                     if (level >= 5) {
-                        for (let index = 0; index < polygons.length; index++) {
-                            polygons[index].setMap(map);
-                        }
-                        // if (markers) {     for (var i = 0; i < markers.length; i++) {
-                        // markers[i].setMap(null);     } }
-                    }
-
-                    if (level <= 3) {
-                        for (let index = 0; index < polygons.length; index++) {
-                            polygons[index].setMap(null);
-                        }
-                        $.getJSON(
-                            "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/chic" +
-                                    "ken.json",
-                            function (data) {
-                                let markers = $(data.positions).map(function (i, position) {
-                                    return new kakao
-                                        .maps
-                                        .Marker({
-                                            position: new kakao
-                                                .maps
-                                                .LatLng(position.lat, position.lng),
-                                            clickable: true
-                                        });
-                                });
-                                for (var i = 0; i < markers.length; i++) {
-                                    markers[i].setMap(map);
-                                }
+                        // console.log('check_polygons : ', check_polygons);
+                        // console.log('check_markers : ', check_markers);
+                        if (check_polygons == false) {
+                            for (let index = 0; index < polygons.length; index++) {
+                                polygons[index].setMap(map);
                             }
-                        );
+                            check_polygons = true;
+                        }
+                        if (check_markers == true) {
+                            for (var index = 0; index < markers.length; index++) {
+                                markers[index].setMap(null);
+                            }
+                            check_markers = false;
+                        }
+                    }
+                    // 확대 레벨 값이 4 이하인 경우 폴리곤 제거 및 해당 동 관련 마커 생성
+                    if (level <= 4) {
+                        // console.log('check_polygons : ', check_polygons);
+                        // console.log('check_markers : ', check_markers);
+                        if (check_polygons == true) {
+                            for (let index = 0; index < polygons.length; index++) {
+                                polygons[index].setMap(null);
+                            }
+                            check_polygons = false;
+                        }
+                        if (check_markers == false) {
+                            $.getJSON(
+                                "https://raw.githubusercontent.com/stories2/Mapper/main/starbucks-edited.json",
+                                function (data) {
+                                    markers = $(data).map(function (i, value) {
+                                        return new kakao
+                                            .maps
+                                            .Marker({
+                                                position: new kakao
+                                                    .maps
+                                                    .LatLng(value.lat, value.lot)
+                                            });
+                                    });
+                                    for (var index = 0; index < markers.length; index++) {
+                                        markers[index].setMap(map);
+
+                                        //마커에 표시할 인포윈도우를 생성합니다
+                                        var infowindow = new kakao
+                                            .maps
+                                            .InfoWindow({
+                                                content: "스타벅스 " + data[index].s_name // 인포윈도우에 표시할 내용
+                                            });
+
+                                        // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다 이벤트 리스너로는 클로저를 만들어 등록합니다 for문에서 클로저를
+                                        // 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+                                        kakao
+                                            .maps
+                                            .event
+                                            .addListener(
+                                                markers[index],
+                                                'mouseover',
+                                                makeOverListener(map, markers[index], infowindow)
+                                            );
+                                        kakao
+                                            .maps
+                                            .event
+                                            .addListener(markers[index], 'mouseout', makeOutListener(infowindow));
+                                    }
+                                }
+                            );
+                            check_markers = true;
+                        }
                     }
                 });
+            // 인포윈도우를 표시하는 클로저를 만드는 함수입니다
+            function makeOverListener(map, marker, infowindow) {
+                return function () {
+                    infowindow.open(map, marker);
+                };
+            }
+
+            // 인포윈도우를 닫는 클로저를 만드는 함수입니다
+            function makeOutListener(infowindow) {
+                return function () {
+                    infowindow.close();
+                };
+            }
         </script>
     </body>
 </html>
