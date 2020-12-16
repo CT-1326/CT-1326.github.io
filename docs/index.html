@@ -96,17 +96,23 @@
                 .CustomOverlay({}); // 해당 지역 이름을 표시할 오버레이
 
             // 초기엔 시군구로 폴리곤 렌더링
-            $.getJSON("../json/seoul_SIG.geojson", function (params) {
-                let data = params.features;
-                let coordinates = [];
-                let name = '';
-                $.each(data, function (index, val) {
-                    coordinates = val.geometry.coordinates;
-                    name = val.properties.SIG_KOR_NM;
-                    // console.log(coordinates, name);
-                    display(coordinates, name, "SIG");
+            $.ajax({
+                    url: "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/seou" +
+                            "l_SIG.geojson",
+                    method: "GET",
+                    dataType: "json"
+                })
+                .done(function (params) {
+                    let data = params.features;
+                    let coordinates = [];
+                    let name = '';
+                    $.each(data, function (index, val) {
+                        coordinates = val.geometry.coordinates;
+                        name = val.properties.SIG_KOR_NM;
+                        // console.log(coordinates, name);
+                        display(coordinates, name, "SIG");
+                    });
                 });
-            });
 
             // 지도에 줌 이벤트가 발생하였을 때
             let markers = [];
@@ -123,17 +129,23 @@
                         for (let index = 0; index < polygons.length; index++) {
                             polygons[index].setMap(null);
                         }
-                        $.getJSON("../json/seoul_SIG.geojson", function (params) {
-                            let data = params.features;
-                            let coordinates = [];
-                            let name = '';
-                            $.each(data, function (index, val) {
-                                coordinates = val.geometry.coordinates;
-                                name = val.properties.SIG_KOR_NM;
-                                // console.log(coordinates, name);
-                                display(coordinates, name, "SIG");
+                        $.ajax({
+                                url: "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/seou" +
+                                        "l_SIG.geojson",
+                                method: "GET",
+                                dataType: "json"
+                            })
+                            .done(function (params) {
+                                let data = params.features;
+                                let coordinates = [];
+                                let name = '';
+                                $.each(data, function (index, val) {
+                                    coordinates = val.geometry.coordinates;
+                                    name = val.properties.SIG_KOR_NM;
+                                    // console.log(coordinates, name);
+                                    display(coordinates, name, "SIG");
+                                });
                             });
-                        });
                     }
                     // 레벨이 6이면 읍면동 데이터 파일을 입력 받아 폴리곤 렌더링
                     if (level == 6) {
@@ -143,63 +155,76 @@
                         for (var index = 0; index < markers.length; index++) {
                             markers[index].setMap(null);
                         }
-                        $.getJSON("../json/seoul_EMD.geojson", function (params) {
-                            let data = params.features;
-                            let coordinates = [];
-                            let name = '';
-                            $.each(data, function (index, val) {
-                                coordinates = val.geometry.coordinates;
-                                name = val.properties.emd_kor_nm;
-                                // console.log(coordinates, name);
-                                display(coordinates, name, "EMD");
+                        $.ajax({
+                                url: "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/seou" +
+                                        "l_EMD.geojson",
+                                method: "GET",
+                                dataType: "json"
+                            })
+                            .done(function (params) {
+                                let data = params.features;
+                                let coordinates = [];
+                                let name = '';
+                                $.each(data, function (index, val) {
+                                    coordinates = val.geometry.coordinates;
+                                    name = val.properties.emd_kor_nm;
+                                    // console.log(coordinates, name);
+                                    display(coordinates, name, "EMD");
+                                });
                             });
-                        });
                     }
                     // 레벨이 4이면 거리 단위 이므로 해당 지역 관련 마커 렌더링
                     if (level == 4) {
                         for (let index = 0; index < polygons.length; index++) {
                             polygons[index].setMap(null);
                         }
-                        $.getJSON("../json/starbucks-edited.json", function (data) {
-                            markers = $(data).map(function (i, value) {
-                                return new kakao
-                                    .maps
-                                    .Marker({
-                                        position: new kakao
-                                            .maps
-                                            .LatLng(value.lat, value.lot)
-                                    });
+                        $.ajax({
+                                url: "https://raw.githubusercontent.com/BSAA7567/BSAA7567.github.io/master/json/star" +
+                                        "bucks-edited.json",
+                                method: "GET",
+                                dataType: "json"
+                            })
+                            .done(function (data) {
+                                markers = $(data).map(function (i, value) {
+                                    return new kakao
+                                        .maps
+                                        .Marker({
+                                            position: new kakao
+                                                .maps
+                                                .LatLng(value.lat, value.lot)
+                                        });
+                                });
+                                for (var index = 0; index < markers.length; index++) {
+                                    markers[index].setMap(map);
+
+                                    //마커에 표시할 인포윈도우를 생성합니다
+                                    var infowindow = new kakao
+                                        .maps
+                                        .InfoWindow({
+                                            content: "스타벅스 " + data[index].s_name // 인포윈도우에 표시할 내용
+                                        });
+
+                                    // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다 이벤트 리스너로는 클로저를 만들어 등록합니다 for문에서 클로저를
+                                    // 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+                                    kakao
+                                        .maps
+                                        .event
+                                        .addListener(
+                                            markers[index],
+                                            'mouseover',
+                                            makeOverListener(map, markers[index], infowindow)
+                                        );
+                                    kakao
+                                        .maps
+                                        .event
+                                        .addListener(markers[index], 'mouseout', makeOutListener(infowindow));
+                                    kakao
+                                        .maps
+                                        .event
+                                        .addListener(markers[index], 'click', makeClickListener(data[index].s_name));
+                                }
                             });
-                            for (var index = 0; index < markers.length; index++) {
-                                markers[index].setMap(map);
 
-                                //마커에 표시할 인포윈도우를 생성합니다
-                                var infowindow = new kakao
-                                    .maps
-                                    .InfoWindow({
-                                        content: "스타벅스 " + data[index].s_name // 인포윈도우에 표시할 내용
-                                    });
-
-                                // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다 이벤트 리스너로는 클로저를 만들어 등록합니다 for문에서 클로저를
-                                // 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
-                                kakao
-                                    .maps
-                                    .event
-                                    .addListener(
-                                        markers[index],
-                                        'mouseover',
-                                        makeOverListener(map, markers[index], infowindow)
-                                    );
-                                kakao
-                                    .maps
-                                    .event
-                                    .addListener(markers[index], 'mouseout', makeOutListener(infowindow));
-                                kakao
-                                    .maps
-                                    .event
-                                    .addListener(markers[index], 'click', makeClickListener(data[index].s_name));
-                            }
-                        });
                     }
                 });
 
@@ -217,8 +242,8 @@
             }
             // 인포윈도우 클릭 시 UI 렌더링 함수
             function makeClickListener(title) {
-                return function() {
-                    console.log('클릭된 지점은 '+title+' 입니다.');
+                return function () {
+                    console.log('클릭된 지점은 ' + title + ' 입니다.');
                 }
             }
 
